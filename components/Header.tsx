@@ -1,0 +1,103 @@
+'use client'
+
+import { useState } from 'react'
+import Link from 'next/link'
+import { motion } from 'framer-motion'
+import { FaBars, FaTimes, FaCode, FaChartLine, FaEnvelope, FaHome, FaBriefcase } from 'react-icons/fa'
+
+const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen)
+  }
+
+  const menuItems = [
+    { href: '/', label: 'Home', icon: FaHome },
+    { href: '/servizi', label: 'Servizi', icon: FaCode },
+    { href: '/portfolio', label: 'Portfolio', icon: FaBriefcase },
+    { href: '/contatti', label: 'Contatti', icon: FaEnvelope },
+  ]
+
+  return (
+    <header className="fixed w-full top-0 z-50 bg-white/90 backdrop-blur-md shadow-lg">
+      <nav className="container mx-auto px-4 py-4">
+        <div className="flex justify-between items-center">
+          {/* Logo */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Link href="/" className="flex items-center space-x-2">
+              <div className="w-10 h-10 bg-gradient-to-r from-primary-500 to-purple-600 rounded-lg flex items-center justify-center">
+                <FaChartLine className="text-white text-xl" />
+              </div>
+              <span className="text-2xl font-bold gradient-text">GPTech Studio</span>
+            </Link>
+          </motion.div>
+
+          {/* Desktop Menu */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="hidden md:flex space-x-8"
+          >
+            {menuItems.map((item, index) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex items-center space-x-2 text-secondary-700 hover:text-primary-600 transition-colors duration-300 font-medium"
+              >
+                <item.icon className="text-sm" />
+                <span>{item.label}</span>
+              </Link>
+            ))}
+          </motion.div>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <button
+              onClick={toggleMenu}
+              className="text-secondary-700 hover:text-primary-600 transition-colors duration-300"
+            >
+              {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+            className="md:hidden mt-4 pb-4"
+          >
+            {menuItems.map((item, index) => (
+              <motion.div
+                key={item.href}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+              >
+                <Link
+                  href={item.href}
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center space-x-3 py-3 px-4 text-secondary-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all duration-300"
+                >
+                  <item.icon className="text-lg" />
+                  <span className="font-medium">{item.label}</span>
+                </Link>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </nav>
+    </header>
+  )
+}
+
+export default Header
