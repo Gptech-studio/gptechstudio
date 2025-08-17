@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { FaBars, FaTimes, FaCode, FaChartLine, FaEnvelope, FaHome, FaBriefcase } from 'react-icons/fa'
+import { FaBars, FaTimes, FaCode, FaChartLine, FaEnvelope, FaHome, FaBriefcase, FaTag } from 'react-icons/fa'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -13,11 +13,28 @@ const Header = () => {
   }
 
   const menuItems = [
-    { href: '/', label: 'Home', icon: FaHome },
-    { href: '/servizi', label: 'Servizi', icon: FaCode },
-    { href: '/portfolio', label: 'Portfolio', icon: FaBriefcase },
-    { href: '/contatti', label: 'Contatti', icon: FaEnvelope },
+    { href: '#home', label: 'Home', icon: FaHome },
+    { href: '#servizi', label: 'Servizi', icon: FaCode },
+    { href: '#pacchetti', label: 'Pacchetti', icon: FaTag },
+    { href: '#portfolio', label: 'Portfolio', icon: FaBriefcase },
+    { href: '#contatti', label: 'Contatti', icon: FaEnvelope },
   ]
+
+  const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault()
+    const targetId = href.replace('#', '')
+    const targetElement = document.getElementById(targetId)
+    
+    if (targetElement) {
+      const offsetTop = targetElement.offsetTop - 80 // Account for header height
+      window.scrollTo({
+        top: offsetTop,
+        behavior: 'smooth'
+      })
+    }
+    
+    setIsMenuOpen(false) // Close mobile menu if open
+  }
 
   return (
     <header className="fixed w-full top-0 z-50 bg-white/90 backdrop-blur-md shadow-lg">
@@ -29,12 +46,16 @@ const Header = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <Link href="/" className="flex items-center space-x-2">
+            <a 
+              href="#home" 
+              onClick={(e) => handleSmoothScroll(e, '#home')}
+              className="flex items-center space-x-2 cursor-pointer"
+            >
               <div className="w-10 h-10 bg-gradient-to-r from-primary-500 to-purple-600 rounded-lg flex items-center justify-center">
                 <FaChartLine className="text-white text-xl" />
               </div>
               <span className="text-2xl font-bold gradient-text">GPTech Studio</span>
-            </Link>
+            </a>
           </motion.div>
 
           {/* Desktop Menu */}
@@ -45,14 +66,15 @@ const Header = () => {
             className="hidden md:flex space-x-8"
           >
             {menuItems.map((item, index) => (
-              <Link
+              <a
                 key={item.href}
                 href={item.href}
-                className="flex items-center space-x-2 text-secondary-700 hover:text-primary-600 transition-colors duration-300 font-medium"
+                onClick={(e) => handleSmoothScroll(e, item.href)}
+                className="flex items-center space-x-2 text-secondary-700 hover:text-primary-600 transition-colors duration-300 font-medium cursor-pointer"
               >
                 <item.icon className="text-sm" />
                 <span>{item.label}</span>
-              </Link>
+              </a>
             ))}
           </motion.div>
 
@@ -83,14 +105,14 @@ const Header = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.1 }}
               >
-                <Link
+                <a
                   href={item.href}
-                  onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center space-x-3 py-3 px-4 text-secondary-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all duration-300"
+                  onClick={(e) => handleSmoothScroll(e, item.href)}
+                  className="flex items-center space-x-3 py-3 px-4 text-secondary-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all duration-300 cursor-pointer"
                 >
                   <item.icon className="text-lg" />
                   <span className="font-medium">{item.label}</span>
-                </Link>
+                </a>
               </motion.div>
             ))}
           </motion.div>
